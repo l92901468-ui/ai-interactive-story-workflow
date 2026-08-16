@@ -1,0 +1,37 @@
+{
+  "metadata": {
+    "synthetic": true,
+    "generatedAt": "2026-08-16T00:00:00.000Z",
+    "notice": "Deliberately broken fictional data for regression testing."
+  },
+  "project": {
+    "id": "badcase-demo",
+    "title": "Broken Branch Sandbox"
+  },
+  "query": "castle banquet negotiation",
+  "settings": {
+    "topK": 2,
+    "minContextScore": 0.2
+  },
+  "evidence": [
+    {
+      "id": "EV-ONLY-001",
+      "kind": "reference",
+      "title": "Beach color note",
+      "text": "A fictional beach uses a pale blue palette.",
+      "tags": ["art", "beach"],
+      "confidence": 0.6
+    }
+  ],
+  "graph": {
+    "nodes": [
+      { "id": "A", "type": "start", "label": "Broken start", "transitions": [{ "to": "MISSING", "kind": "main" }] },
+      { "id": "B", "type": "choice", "label": "One-sided choice", "transitions": [{ "to": "C", "kind": "success" }] },
+      { "id": "C", "type": "scene", "label": "Unexpected dead end", "transitions": [] },
+      { "id": "ORPHAN", "type": "ending", "label": "Unreachable ending", "transitions": [] }
+    ]
+  },
+  "variables": [
+    { "id": "broken_flag", "setAt": ["A"], "readAt": [], "payoffAt": ["MISSING"], "settleAt": [] }
+  ]
+}

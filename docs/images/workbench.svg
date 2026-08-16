@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="675" viewBox="0 0 1200 675" role="img" aria-labelledby="title desc">
+  <title id="title">StoryFlow Lab 正常样例工作台</title>
+  <desc id="desc">展示真实 CLI 正常样例的三条入选证据、中等置信度、八节点七边、质量门通过和策略复审未触发。</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#071019"/><stop offset="1" stop-color="#0d1d28"/></linearGradient>
+    <filter id="shadow"><feDropShadow dy="8" stdDeviation="12" flood-opacity=".28"/></filter>
+    <style>
+      .sans{font-family:Arial,'Microsoft YaHei',sans-serif}.mono{font-family:Consolas,monospace}.tiny{font-size:12px}.body{font-size:13px}.label{font-size:14px}.heading{font-size:17px;font-weight:700}.title{font-size:27px;font-weight:700}.muted{fill:#789198}.bright{fill:#edf8f6}
+    </style>
+  </defs>
+  <rect width="1200" height="675" rx="24" fill="url(#bg)"/>
+  <rect width="1200" height="64" rx="24" fill="#08141e"/><path d="M0 63.5H1200" stroke="#223441"/>
+  <rect x="28" y="16" width="34" height="34" rx="10" fill="#61e6bc"/><text x="45" y="38" text-anchor="middle" class="sans body" font-weight="900" fill="#071019">SF</text>
+  <text x="76" y="31" class="sans label bright" font-weight="700">StoryFlow Lab</text><text x="76" y="49" class="sans tiny muted">正常样例 · 真实 CLI 结果对齐</text>
+  <rect x="980" y="18" width="188" height="28" rx="14" fill="#61e6bc" opacity=".08" stroke="#61e6bc"/><circle cx="1000" cy="32" r="5" fill="#61e6bc"/><text x="1014" y="37" class="sans tiny" fill="#a9eed8">仅合成数据 · LOCAL</text>
+
+  <rect x="0" y="64" width="190" height="611" fill="#09151f"/><path d="M189.5 64V675" stroke="#21333f"/>
+  <text x="27" y="102" class="sans tiny" font-weight="700" letter-spacing="2" fill="#6d8991">WORKFLOW</text>
+  <g class="sans body"><text x="28" y="146" fill="#d7e8e5">01　输入解析</text><text x="28" y="190" fill="#a8efd8">02　上下文选择</text><text x="28" y="234" fill="#d7e8e5">03　分支校验</text><text x="28" y="278" fill="#d7e8e5">04　质量门</text><text x="28" y="322" fill="#d7e8e5">05　生成回执</text></g>
+  <path d="M42 154V306" stroke="#2b4650"/>
+  <rect x="25" y="394" width="140" height="38" rx="10" fill="#61e6bc" opacity=".08" stroke="#61e6bc"/><text x="44" y="418" class="sans body" fill="#b0f1dd">● 正常样例</text>
+  <text x="44" y="468" class="sans body muted">注入 Bad Case</text><text x="44" y="512" class="sans body muted">修复计划预览</text>
+
+  <text x="222" y="102" class="sans tiny" font-weight="700" letter-spacing="2" fill="#6d8991">SYNTHETIC STORY / 雾灯群岛</text>
+  <text x="222" y="137" class="sans title bright">正常样例：质量门通过</text>
+  <rect x="1015" y="103" width="153" height="34" rx="10" fill="#61e6bc" opacity=".08" stroke="#61e6bc"/><circle cx="1035" cy="120" r="5" fill="#61e6bc"/><text x="1050" y="125" class="sans body" fill="#b7f1df">PASS</text>
+
+  <g filter="url(#shadow)">
+    <rect x="222" y="160" width="446" height="245" rx="15" fill="#0e1d29" stroke="#293d49"/>
+    <text x="246" y="190" class="sans tiny" font-weight="700" letter-spacing="1.5" fill="#6d8991">CONTEXT SELECTOR</text><text x="246" y="219" class="sans heading bright">3 / 4 条证据入选</text>
+    <rect x="570" y="186" width="74" height="28" rx="14" fill="#ffbf66" opacity=".09" stroke="#ffbf66"/><text x="607" y="205" text-anchor="middle" class="sans tiny" fill="#ffdaa1">MEDIUM</text>
+    <g class="sans"><rect x="246" y="239" width="398" height="42" rx="9" fill="#091720"/><text x="260" y="265" class="mono tiny" fill="#6bdec0">EV-CANON-001</text><text x="409" y="265" class="body bright">score 0.6400</text><rect x="246" y="290" width="398" height="42" rx="9" fill="#091720"/><text x="260" y="316" class="mono tiny" fill="#6bdec0">EV-FLOW-002</text><text x="409" y="316" class="body bright">score 0.3857</text><rect x="246" y="341" width="398" height="42" rx="9" fill="#091720"/><text x="260" y="367" class="mono tiny" fill="#6bdec0">EV-REF-003</text><text x="409" y="367" class="body bright">score 0.3257</text></g>
+
+    <rect x="686" y="160" width="482" height="245" rx="15" fill="#0e1d29" stroke="#293d49"/>
+    <text x="710" y="190" class="sans tiny" font-weight="700" letter-spacing="1.5" fill="#6d8991">BRANCH GRAPH</text><text x="710" y="219" class="sans heading bright">8 节点 · 7 边 · 可达 8</text>
+    <g stroke="#4c6b74" stroke-width="2"><path d="M764 286H812"/><path d="M852 286L900 252"/><path d="M852 286L900 337"/><path d="M940 252H974"/><path d="M1014 252H1048"/><path d="M1014 252L1048 337"/><path d="M1088 252H1122"/></g>
+    <g class="mono tiny" text-anchor="middle"><g><rect x="724" y="267" width="40" height="38" rx="8" fill="#102734" stroke="#62c8ff"/><text x="744" y="291" fill="#cbeefe">N0</text></g><g><rect x="812" y="267" width="40" height="38" rx="8" fill="#171f3a" stroke="#9c8cff"/><text x="832" y="291" fill="#d8d2ff">N1</text></g><g><rect x="900" y="233" width="40" height="38" rx="8" fill="#102734" stroke="#47646e"/><text x="920" y="257" fill="#cee1df">N2</text></g><g><rect x="900" y="318" width="40" height="38" rx="8" fill="#2b2419" stroke="#ffbf66"/><text x="920" y="342" fill="#ffe0ad">F1</text></g><g><rect x="974" y="233" width="40" height="38" rx="8" fill="#171f3a" stroke="#9c8cff"/><text x="994" y="257" fill="#d8d2ff">N3</text></g><g><rect x="1048" y="233" width="40" height="38" rx="8" fill="#102734" stroke="#47646e"/><text x="1068" y="257" fill="#cee1df">N4</text></g><g><rect x="1048" y="318" width="40" height="38" rx="8" fill="#2b2419" stroke="#ffbf66"/><text x="1068" y="342" fill="#ffe0ad">F2</text></g><g><rect x="1122" y="233" width="40" height="38" rx="8" fill="#102734" stroke="#61e6bc"/><text x="1142" y="257" fill="#c6f6e7">N5</text></g></g>
+    <text x="710" y="384" class="sans tiny" fill="#8da5aa">2 个选择 · 2 个失败节点 · 2/2 变量生命周期完整</text>
+
+    <rect x="222" y="423" width="946" height="133" rx="15" fill="#0e1d29" stroke="#293d49"/>
+    <text x="246" y="452" class="sans tiny" font-weight="700" letter-spacing="1.5" fill="#6d8991">QUALITY GATES</text><text x="246" y="480" class="sans heading bright">五个质量门全部通过</text>
+    <g class="sans tiny"><g transform="translate(246 500)"><rect width="164" height="38" rx="9" fill="#091720" stroke="#27434a"/><circle cx="16" cy="19" r="5" fill="#61e6bc"/><text x="29" y="23" fill="#d5e6e3">上下文 · PASS</text></g><g transform="translate(426 500)"><rect width="164" height="38" rx="9" fill="#091720" stroke="#27434a"/><circle cx="16" cy="19" r="5" fill="#61e6bc"/><text x="29" y="23" fill="#d5e6e3">图结构 · PASS</text></g><g transform="translate(606 500)"><rect width="164" height="38" rx="9" fill="#091720" stroke="#27434a"/><circle cx="16" cy="19" r="5" fill="#61e6bc"/><text x="29" y="23" fill="#d5e6e3">失败覆盖 · PASS</text></g><g transform="translate(786 500)"><rect width="164" height="38" rx="9" fill="#091720" stroke="#27434a"/><circle cx="16" cy="19" r="5" fill="#61e6bc"/><text x="29" y="23" fill="#d5e6e3">变量 · PASS</text></g><g transform="translate(966 500)"><rect width="178" height="38" rx="9" fill="#091720" stroke="#27434a"/><circle cx="16" cy="19" r="5" fill="#61e6bc"/><text x="29" y="23" fill="#d5e6e3">可回溯 · PASS</text></g></g>
+  </g>
+  <rect x="222" y="575" width="946" height="66" rx="13" fill="#091720" stroke="#243a45"/>
+  <text x="246" y="601" class="sans tiny" fill="#6d8991">GENERATION RECEIPT</text><text x="246" y="625" class="mono body" font-weight="700" fill="#61e6bc">PASS</text><text x="330" y="625" class="mono tiny" fill="#9cb3b6">rcpt_73b2c8e6…</text><text x="528" y="625" class="mono tiny" fill="#9cb3b6">confidence medium</text><text x="734" y="625" class="mono tiny" fill="#9cb3b6">uncertainty 1</text><text x="908" y="625" class="mono tiny" fill="#9cb3b6">autoReview false</text>
+  <text x="27" y="658" class="sans tiny" fill="#526f77">浏览器端静态产品原型 · 数据来自仓库内合成 fixture</text>
+</svg>

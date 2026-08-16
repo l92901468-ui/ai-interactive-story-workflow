@@ -1,0 +1,15 @@
+node_modules/
+coverage/
+dist/
+tmp/
+*.log
+.DS_Store
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+secrets/
+private-data/
+examples/output/*.local.json

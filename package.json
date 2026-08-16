@@ -1,0 +1,16 @@
+{
+  "name": "ai-interactive-story-workflow",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Privacy-safe portfolio reconstruction of an AI-assisted interactive story workflow.",
+  "type": "commonjs",
+  "scripts": {
+    "check": "node --check src/hash.js && node --check src/context-selector.js && node --check src/validators.js && node --check src/quality-gates.js && node --check src/workflow.js && node --check src/cli.js && node --check demo/app.js",
+    "test": "node --test",
+    "example": "node src/cli.js examples/input/synthetic-story.json",
+    "example:badcase": "node src/cli.js examples/input/synthetic-badcase.json"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

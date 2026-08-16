@@ -1,0 +1,70 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="675" viewBox="0 0 1200 675" role="img" aria-labelledby="title desc">
+  <title id="title">AI 互动故事工作流架构</title>
+  <desc id="desc">从合成输入、上下文选择、结构校验、质量门到回执快照的本地工作流；修复阶段只生成计划。</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#07131d"/><stop offset="1" stop-color="#0d1e29"/></linearGradient>
+    <linearGradient id="accent" x1="0" y1="0" x2="1" y2="0"><stop stop-color="#62c8ff"/><stop offset="1" stop-color="#61e6bc"/></linearGradient>
+    <filter id="shadow"><feDropShadow dy="12" stdDeviation="16" flood-opacity=".30"/></filter>
+    <marker id="arrow" markerWidth="9" markerHeight="9" refX="8" refY="4.5" orient="auto"><path d="M0 0L9 4.5L0 9Z" fill="#587a85"/></marker>
+    <style>
+      .sans{font-family:Arial,'Microsoft YaHei',sans-serif}.kicker{font-size:13px;font-weight:700;letter-spacing:2px}.title{font-size:30px;font-weight:700}.stage{font-size:13px;font-weight:700}.box-title{font-size:20px;font-weight:700}.body{font-size:14px}.small{font-size:12px}.muted{fill:#8da5aa}.bright{fill:#eef8f6}
+    </style>
+  </defs>
+  <rect width="1200" height="675" rx="24" fill="url(#bg)"/>
+  <circle cx="1080" cy="40" r="250" fill="#61e6bc" opacity=".05"/>
+  <text x="60" y="68" class="sans kicker" fill="#6f8b93">PRIVACY-SAFE RECONSTRUCTION · LOCAL WORKFLOW</text>
+  <text x="60" y="111" class="sans title bright">AI 互动故事工作流：可检查、可回溯、可复现</text>
+  <rect x="60" y="140" width="1080" height="2" fill="url(#accent)" opacity=".7"/>
+
+  <g filter="url(#shadow)" class="sans">
+    <g transform="translate(60 190)">
+      <rect width="196" height="250" rx="18" fill="#0e202c" stroke="#2b4550"/>
+      <text x="24" y="36" class="stage" fill="#62c8ff">01 · SYNTHETIC INPUT</text>
+      <text x="24" y="76" class="box-title bright">合成输入</text>
+      <rect x="24" y="102" width="148" height="40" rx="9" fill="#112b39"/><text x="39" y="128" class="body muted">故事目标与约束</text>
+      <rect x="24" y="154" width="148" height="40" rx="9" fill="#112b39"/><text x="39" y="180" class="body muted">节点、边与变量</text>
+      <text x="24" y="224" class="small" fill="#94e4cc">synthetic = true</text>
+    </g>
+    <g transform="translate(280 190)">
+      <rect width="196" height="250" rx="18" fill="#0e202c" stroke="#2b4550"/>
+      <text x="24" y="36" class="stage" fill="#61e6bc">02 · RETRIEVAL</text>
+      <text x="24" y="76" class="box-title bright">上下文选择</text>
+      <circle cx="31" cy="116" r="7" fill="#61e6bc"/><text x="49" y="121" class="body muted">相关性评分</text>
+      <circle cx="31" cy="158" r="7" fill="#62c8ff"/><text x="49" y="163" class="body muted">证据 ID 回溯</text>
+      <circle cx="31" cy="200" r="7" fill="#ffbf66"/><text x="49" y="205" class="body muted">不确定性保留</text>
+    </g>
+    <g transform="translate(500 190)">
+      <rect width="196" height="250" rx="18" fill="#0e202c" stroke="#2b4550"/>
+      <text x="24" y="36" class="stage" fill="#9c8cff">03 · VALIDATION</text>
+      <text x="24" y="76" class="box-title bright">结构校验</text>
+      <rect x="24" y="102" width="148" height="34" rx="8" fill="#171f3a"/><text x="37" y="124" class="body" fill="#c5c0f2">节点与悬空边</text>
+      <rect x="24" y="146" width="148" height="34" rx="8" fill="#171f3a"/><text x="37" y="168" class="body" fill="#c5c0f2">可达性与失败覆盖</text>
+      <rect x="24" y="190" width="148" height="34" rx="8" fill="#171f3a"/><text x="37" y="212" class="body" fill="#c5c0f2">变量生命周期</text>
+    </g>
+    <g transform="translate(720 190)">
+      <rect width="196" height="250" rx="18" fill="#0e202c" stroke="#2b4550"/>
+      <text x="24" y="36" class="stage" fill="#ffbf66">04 · QUALITY GATES</text>
+      <text x="24" y="76" class="box-title bright">质量门与复审</text>
+      <text x="24" y="116" class="body muted">正常样例：未触发</text>
+      <text x="24" y="151" class="body muted">Bad Case：blocked</text>
+      <text x="24" y="186" class="body muted">输出修复计划</text>
+      <text x="24" y="221" class="small" fill="#ffc96f">不自动修改输入</text>
+    </g>
+    <g transform="translate(940 190)">
+      <rect width="200" height="250" rx="18" fill="#0e202c" stroke="#2b4550"/>
+      <text x="24" y="36" class="stage" fill="#61e6bc">05 · RECEIPT</text>
+      <text x="24" y="76" class="box-title bright">回执与快照</text>
+      <rect x="24" y="103" width="152" height="46" rx="9" fill="#091720" stroke="#29434e"/>
+      <text x="38" y="122" class="small" fill="#728b91">SNAPSHOT HASH</text><text x="38" y="140" class="small" fill="#b5cdce">SHA-256</text>
+      <rect x="24" y="163" width="152" height="46" rx="9" fill="#091720" stroke="#29434e"/>
+      <text x="38" y="182" class="small" fill="#728b91">CONTEXT</text><text x="38" y="200" class="small" fill="#b5cdce">TRACEABLE</text>
+    </g>
+  </g>
+  <g stroke="#587a85" stroke-width="2.5" marker-end="url(#arrow)"><path d="M256 315H274"/><path d="M476 315H494"/><path d="M696 315H714"/><path d="M916 315H934"/></g>
+
+  <rect x="60" y="485" width="1080" height="126" rx="16" fill="#091720" stroke="#263f4a"/>
+  <text x="86" y="518" class="sans stage" fill="#79969d">LOCAL-ONLY DATA FLOW</text>
+  <g class="sans body bright"><text x="86" y="559">JSON 输入</text><text x="205" y="559" fill="#5b7a84">→</text><text x="244" y="559">确定性检查</text><text x="388" y="559" fill="#5b7a84">→</text><text x="427" y="559">问题清单</text><text x="542" y="559" fill="#5b7a84">→</text><text x="581" y="559">修复计划</text><text x="696" y="559" fill="#5b7a84">→</text><text x="735" y="559">人工确认与重新运行</text></g>
+  <rect x="945" y="531" width="166" height="42" rx="12" fill="#61e6bc" opacity=".09" stroke="#61e6bc"/><text x="977" y="558" class="sans body" fill="#a8efd9">零外部依赖</text>
+  <text x="60" y="648" class="sans small" fill="#56727a">所有名称、内容与数据均为虚构；工作流不会自动修复或覆盖输入。</text>
+</svg>

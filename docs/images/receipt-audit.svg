@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="675" viewBox="0 0 1200 675" role="img" aria-labelledby="title desc">
+  <title id="title">正常样例生成回执与可回溯记录</title>
+  <desc id="desc">展示真实 CLI 正常样例的哈希、三条证据、中等置信度、一个不确定项以及策略复审未触发。</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#07121b"/><stop offset="1" stop-color="#10232e"/></linearGradient>
+    <filter id="shadow"><feDropShadow dy="12" stdDeviation="18" flood-opacity=".3"/></filter>
+    <style>.sans{font-family:Arial,'Microsoft YaHei',sans-serif}.mono{font-family:Consolas,monospace}.tiny{font-size:12px}.body{font-size:14px}.heading{font-size:18px;font-weight:700}.title{font-size:29px;font-weight:700}.muted{fill:#82999f}.bright{fill:#eef8f6}</style>
+  </defs>
+  <rect width="1200" height="675" rx="24" fill="url(#bg)"/>
+  <text x="62" y="68" class="sans body" font-weight="700" letter-spacing="2" fill="#6d8991">GENERATION RECEIPT · SYNTHETIC NORMAL RUN</text>
+  <text x="62" y="110" class="sans title bright">正常样例回执：通过，但保留一个不确定项</text>
+  <rect x="1000" y="61" width="138" height="42" rx="12" fill="#61e6bc" opacity=".09" stroke="#61e6bc"/><circle cx="1023" cy="82" r="5" fill="#61e6bc"/><text x="1040" y="88" class="sans body" font-weight="700" fill="#b7f2df">PASS</text>
+
+  <g filter="url(#shadow)">
+    <rect x="62" y="151" width="690" height="459" rx="18" fill="#0d1d28" stroke="#29404b"/>
+    <text x="90" y="190" class="sans body" font-weight="700" letter-spacing="1.5" fill="#6d8991">IMMUTABLE SUMMARY</text>
+    <g class="sans body"><text x="90" y="235" class="muted">RUN ID</text><text x="264" y="235" class="mono body bright">rcpt_73b2c8e6b1bf5136</text><path d="M90 254H724" stroke="#213641"/>
+      <text x="90" y="289" class="muted">INPUT HASH</text><text x="264" y="289" class="mono body" fill="#b5cdce">fd7b2763…c1e8d3e</text>
+      <text x="90" y="329" class="muted">CONTEXT HASH</text><text x="264" y="329" class="mono body" fill="#b5cdce">8ca376a5…ba2fc4259</text>
+      <text x="90" y="369" class="muted">SNAPSHOT HASH</text><text x="264" y="369" class="mono body" fill="#b5cdce">42b14792…cc3f3d2</text><path d="M90 390H724" stroke="#213641"/>
+      <text x="90" y="426" class="muted">CONTEXT</text><text x="264" y="426" fill="#f0cf9b">medium · averageScore 0.4505</text>
+      <text x="90" y="466" class="muted">POLICY REVIEW</text><text x="264" y="466" class="bright">未触发 · decision accepted</text>
+      <text x="90" y="508" class="muted">EVIDENCE</text>
+      <g class="mono tiny" text-anchor="middle"><rect x="264" y="485" width="132" height="32" rx="9" fill="#091720" stroke="#2a4650"/><text x="330" y="506" fill="#8fe4ca">EV-CANON-001</text><rect x="407" y="485" width="128" height="32" rx="9" fill="#091720" stroke="#2a4650"/><text x="471" y="506" fill="#8fe4ca">EV-FLOW-002</text><rect x="546" y="485" width="128" height="32" rx="9" fill="#091720" stroke="#2a4650"/><text x="610" y="506" fill="#8fe4ca">EV-REF-003</text></g>
+      <rect x="90" y="541" width="634" height="48" rx="10" fill="#ffbf66" opacity=".05" stroke="#ffbf66"/>
+      <text x="108" y="560" class="tiny" font-weight="700" fill="#f6c77e">UNCERTAINTY COUNT = 1</text><text x="108" y="580" class="tiny" fill="#aab8bb">虚构公共日志版本号未指定，需要人工复核。</text>
+    </g>
+
+    <rect x="778" y="151" width="360" height="459" rx="18" fill="#0d1d28" stroke="#29404b"/>
+    <text x="806" y="190" class="sans body" font-weight="700" letter-spacing="1.5" fill="#6d8991">TRACE CHAIN</text>
+    <g class="sans"><circle cx="830" cy="245" r="20" fill="#112c38" stroke="#62c8ff"/><text x="830" y="250" text-anchor="middle" class="body" fill="#bde9ff">01</text><text x="870" y="241" class="heading bright">输入冻结</text><text x="870" y="260" class="tiny muted">规范化 JSON 与哈希</text><path d="M830 266V302" stroke="#3c5963" stroke-width="2"/>
+      <circle cx="830" cy="324" r="20" fill="#112c38" stroke="#61e6bc"/><text x="830" y="329" text-anchor="middle" class="body" fill="#b8f1df">02</text><text x="870" y="320" class="heading bright">上下文选择</text><text x="870" y="339" class="tiny muted">3 条证据 · medium</text><path d="M830 345V381" stroke="#3c5963" stroke-width="2"/>
+      <circle cx="830" cy="403" r="20" fill="#1f1e32" stroke="#9c8cff"/><text x="830" y="408" text-anchor="middle" class="body" fill="#ddd7ff">03</text><text x="870" y="399" class="heading bright">质量检查</text><text x="870" y="418" class="tiny muted">五个 gate 均 PASS</text><path d="M830 424V460" stroke="#3c5963" stroke-width="2"/>
+      <circle cx="830" cy="482" r="20" fill="#2b261a" stroke="#ffbf66"/><text x="830" y="487" text-anchor="middle" class="body" fill="#ffe0ac">04</text><text x="870" y="478" class="heading bright">保留不确定性</text><text x="870" y="497" class="tiny muted">1 项需人工复核</text><path d="M830 503V539" stroke="#3c5963" stroke-width="2"/>
+      <circle cx="830" cy="561" r="20" fill="#112c2a" stroke="#61e6bc"/><text x="830" y="566" text-anchor="middle" class="body" fill="#b8f1df">05</text><text x="870" y="557" class="heading bright">回执封装</text><text x="870" y="576" class="tiny muted">策略复审未触发</text></g>
+  </g>
+  <text x="62" y="648" class="sans tiny" fill="#56727a">回执用于本地重现与结果对照，不代表区块链存证或第三方审计。</text>
+</svg>

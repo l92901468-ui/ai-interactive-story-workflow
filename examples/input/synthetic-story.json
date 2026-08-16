@@ -1,0 +1,67 @@
+{
+  "metadata": {
+    "synthetic": true,
+    "generatedAt": "2026-08-16T00:00:00.000Z",
+    "notice": "Fictional data created for this public portfolio demo."
+  },
+  "project": {
+    "id": "lantern-isles-demo",
+    "title": "The Lantern Isles / 雾灯群岛"
+  },
+  "query": "lighthouse tide map battery failure route evidence",
+  "settings": {
+    "topK": 3,
+    "minContextScore": 0.08
+  },
+  "evidence": [
+    {
+      "id": "EV-CANON-001",
+      "kind": "canon",
+      "title": "Lighthouse power rule",
+      "text": "The harbor lighthouse uses a moon-salt battery. The keeper must verify the tide map before restoring power.",
+      "tags": ["lighthouse", "battery", "tide map"],
+      "confidence": 0.98
+    },
+    {
+      "id": "EV-FLOW-002",
+      "kind": "draft",
+      "title": "Failure route behavior",
+      "text": "A depleted battery sends the player to the greenhouse for a spare crystal. Ignoring the warning creates a short failure route and safe return.",
+      "tags": ["battery", "failure route", "branch"],
+      "confidence": 0.9
+    },
+    {
+      "id": "EV-REF-003",
+      "kind": "reference",
+      "title": "Tide map provenance",
+      "text": "The tide map source label must remain visible in the generation receipt so later reviewers can trace the navigation rule.",
+      "tags": ["tide map", "evidence", "receipt"],
+      "confidence": 0.76,
+      "uncertainty": "The fictional public-log revision number is intentionally unspecified and requires human review."
+    },
+    {
+      "id": "EV-ART-004",
+      "kind": "reference",
+      "title": "Color study",
+      "text": "A teal and amber palette is suggested for the harbor market.",
+      "tags": ["art", "palette"],
+      "confidence": 0.7
+    }
+  ],
+  "graph": {
+    "nodes": [
+      { "id": "N0", "type": "start", "label": "Arrival", "transitions": [{ "to": "N1", "kind": "main" }] },
+      { "id": "N1", "type": "choice", "label": "Inspect the battery", "transitions": [{ "to": "N2", "kind": "success" }, { "to": "F1", "kind": "failure" }] },
+      { "id": "N2", "type": "scene", "label": "Verify the tide map", "transitions": [{ "to": "N3", "kind": "main" }] },
+      { "id": "N3", "type": "choice", "label": "Restore the beacon", "transitions": [{ "to": "N4", "kind": "success" }, { "to": "F2", "kind": "failure" }] },
+      { "id": "N4", "type": "payoff", "label": "The harbor opens", "transitions": [{ "to": "N5", "kind": "main" }] },
+      { "id": "N5", "type": "ending", "label": "Safe passage", "transitions": [] },
+      { "id": "F1", "type": "failure", "label": "Return with a spare crystal", "transitions": [] },
+      { "id": "F2", "type": "failure", "label": "Delay until the next tide", "transitions": [] }
+    ]
+  },
+  "variables": [
+    { "id": "beacon_charge", "setAt": ["N0"], "readAt": ["N1"], "payoffAt": ["N4"], "settleAt": ["N5"] },
+    { "id": "tide_map_verified", "setAt": ["N2"], "readAt": ["N3"], "payoffAt": ["N4"], "settleAt": ["N5"] }
+  ]
+}

@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="color-scheme" content="dark" />
+    <title>StoryFlow Lab · 脱敏交互原型</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <header class="topbar">
+        <div class="brand">
+          <span class="brand-mark" aria-hidden="true">SF</span>
+          <div>
+            <strong>StoryFlow Lab</strong>
+            <span>AI 互动故事工作流 · 脱敏重建版</span>
+          </div>
+        </div>
+        <div class="privacy-badge"><span></span> 仅合成数据 · Local Demo</div>
+      </header>
+
+      <main class="workspace">
+        <aside class="rail">
+          <p class="eyebrow">WORKFLOW</p>
+          <ol class="steps" aria-label="工作流阶段">
+            <li class="done"><span>01</span><div><b>输入解析</b><small>结构化需求</small></div></li>
+            <li class="active"><span>02</span><div><b>上下文选择</b><small>证据与置信度</small></div></li>
+            <li class="done"><span>03</span><div><b>分支校验</b><small>节点 / 边 / 变量</small></div></li>
+            <li class="done"><span>04</span><div><b>质量门</b><small>失败覆盖与回溯</small></div></li>
+            <li class="done"><span>05</span><div><b>生成回执</b><small>哈希与快照</small></div></li>
+          </ol>
+
+          <div class="scenario-panel">
+            <p class="eyebrow">SCENARIO</p>
+            <button class="scenario active" data-mode="normal">正常样例</button>
+            <button class="scenario" data-mode="badcase">注入 Bad Case</button>
+            <button class="scenario" data-mode="plan">修复计划预览</button>
+          </div>
+          <p class="rail-note">此页面不调用模型或网络，仅展示浏览器端交互原型。</p>
+        </aside>
+
+        <section class="content">
+          <div class="headline-row">
+            <div>
+              <p class="eyebrow">SYNTHETIC STORY / 雾灯群岛</p>
+              <h1>把模糊创意变成可检查、可回溯的分支方案</h1>
+            </div>
+            <div id="runStatus" class="run-status pass"><i></i><span>质量门通过</span></div>
+          </div>
+
+          <div class="metrics" aria-label="流程摘要">
+            <article><span>上下文入选</span><strong id="metricEvidence">3</strong><small id="metricEvidenceDetail">/ 4 条合成证据</small></article>
+            <article><span>图结构</span><strong id="metricGraph">8</strong><small id="metricGraphDetail">节点 · 7 条边 · 可达 8</small></article>
+            <article><span>失败覆盖</span><strong id="metricFailure">2/2</strong><small id="metricFailureDetail">2 个选择 · 2 个失败节点</small></article>
+            <article><span>可回溯性</span><strong id="metricTrace">PASS</strong><small id="metricTraceDetail">1 项不确定性已保留</small></article>
+          </div>
+
+          <div class="grid two-col">
+            <article class="card evidence-card">
+              <div class="card-head">
+                <div><p class="eyebrow">CONTEXT SELECTOR</p><h2>上下文选择</h2></div>
+                <span id="confidenceBadge" class="chip amber">中置信</span>
+              </div>
+              <div id="evidenceList" class="evidence-list"></div>
+              <div class="uncertainty">
+                <span>低置信保留</span>
+                <p id="uncertaintyText">虚构公共日志版本号未指定，需要人工复核。</p>
+              </div>
+            </article>
+
+            <article class="card graph-card">
+              <div class="card-head">
+                <div><p class="eyebrow">BRANCH GRAPH</p><h2>节点、边与变量生命周期</h2></div>
+                <span id="graphBadge" class="chip green">结构有效</span>
+              </div>
+              <div id="miniGraph" class="mini-graph" aria-label="合成分支图"></div>
+              <div id="variableRows" class="variable-rows"></div>
+            </article>
+          </div>
+
+          <article class="card gates-card">
+            <div class="card-head">
+              <div><p class="eyebrow">QUALITY GATES</p><h2>自动检查与复审建议</h2></div>
+              <span id="reviewBadge" class="chip blue">策略复审未触发</span>
+            </div>
+            <div id="gateList" class="gate-list"></div>
+            <div id="repairCallout" class="repair-callout hidden"></div>
+          </article>
+
+          <article class="card receipt-card">
+            <div class="receipt-title">
+              <div><p class="eyebrow">GENERATION RECEIPT</p><h2>生成回执与快照</h2></div>
+              <span id="receiptState">PASS</span>
+            </div>
+            <div class="receipt-grid">
+              <div><span>RUN ID</span><code id="runId">rcpt_73b2c8e6b1bf5136</code></div>
+              <div><span>CONTEXT HASH</span><code id="contextHash">8ca376…4259</code></div>
+              <div><span>SNAPSHOT HASH</span><code id="snapshotHash">42b147…f3d2</code></div>
+              <div><span>POLICY</span><code id="policyText">pass / traceable</code></div>
+            </div>
+          </article>
+        </section>
+      </main>
+    </div>
+    <script src="./app.js"></script>
+  </body>
+</html>

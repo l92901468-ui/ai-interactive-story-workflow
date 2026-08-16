@@ -1,0 +1,58 @@
+{
+  "notice": "Abridged synthetic example. Run npm run example for the full snapshot.",
+  "snapshotSummary": {
+    "project": {
+      "id": "lantern-isles-demo",
+      "title": "The Lantern Isles / 雾灯群岛"
+    },
+    "status": "passed",
+    "selectedEvidenceIds": [
+      "EV-CANON-001",
+      "EV-FLOW-002",
+      "EV-REF-003"
+    ],
+    "uncertainties": [
+      {
+        "evidenceId": "EV-REF-003",
+        "note": "The fictional public-log revision number is intentionally unspecified and requires human review.",
+        "needsHumanReview": true
+      }
+    ],
+    "graphStats": {
+      "nodes": 8,
+      "edges": 7,
+      "choices": 2,
+      "failures": 2,
+      "endings": 1,
+      "reachable": 8
+    },
+    "variableStats": {
+      "variables": 2,
+      "complete": 2
+    },
+    "stages": [
+      { "id": "identify", "label": "Identify source facts and uncertainties", "status": "complete" },
+      { "id": "generate", "label": "Assemble a branch-aware generation plan", "status": "complete" },
+      { "id": "validate", "label": "Validate graph, failures, variables, and traceability", "status": "complete" },
+      { "id": "repair", "label": "Create a repair plan and trigger policy review", "status": "not_needed" }
+    ],
+    "snapshotHash": "42b147929105e27fd3f8dc8eb222438e16d2dcbbd4a4698e801a526cccc3f3d2"
+  },
+  "receipt": {
+    "schemaVersion": "1.0.0",
+    "receiptId": "rcpt_73b2c8e6b1bf5136",
+    "projectId": "lantern-isles-demo",
+    "generatedAt": "2026-08-16T00:00:00.000Z",
+    "status": "passed",
+    "snapshotHash": "42b147929105e27fd3f8dc8eb222438e16d2dcbbd4a4698e801a526cccc3f3d2",
+    "inputHash": "fd7b27634a468a9e6fdd3453df349459168e3ce9253f4527f753d697fc1e8d3e",
+    "contextHash": "8ca376a5805a80501e2847ea8a4e5436f8f5c24df5f1bdbce5fb144ba2fc4259",
+    "validationHash": "99e20955c91c8e2e13b0f35b936d8a60ef9a27589581581033ece48070711c52",
+    "selectedEvidenceIds": ["EV-CANON-001", "EV-FLOW-002", "EV-REF-003"],
+    "uncertaintyCount": 1,
+    "graphStats": { "nodes": 8, "edges": 7, "choices": 2, "failures": 2, "endings": 1, "reachable": 8 },
+    "variableStats": { "variables": 2, "complete": 2 },
+    "reviewDecision": "accepted",
+    "receiptHash": "15037e67021eaa4e3cde08a4e13d612385b5f4ceb0f11818ab9e859ce9f7edc8"
+  }
+}
