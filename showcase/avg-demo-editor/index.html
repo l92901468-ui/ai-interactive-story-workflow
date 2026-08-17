@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="影游交互制作工作台：覆盖互动影游制作流程的 14 屏高保真产品交互原型。">
+  <title>影游交互制作工作台</title>
+  <style>
+    :root{--bg:#070a12;--panel:#11182a;--line:#263454;--text:#f2f5ff;--muted:#a6b0ca;--blue:#72a7ff;--cyan:#68e0d1;--violet:#a98cff;--max:1480px}
+    *{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:radial-gradient(circle at 12% 0,#17264a 0,transparent 36%),radial-gradient(circle at 90% 14%,#302051 0,transparent 30%),var(--bg);color:var(--text);font:15px/1.7 Inter,"PingFang SC","Microsoft YaHei",sans-serif}
+    a{color:inherit}.shell{width:min(calc(100% - 32px),var(--max));margin:auto}.hero{padding:82px 0 52px}.eyebrow{display:inline-flex;gap:8px;align-items:center;padding:7px 12px;border:1px solid #48618f;border-radius:999px;color:#c9d9ff;background:#101a30}.dot{width:7px;height:7px;border-radius:50%;background:var(--cyan);box-shadow:0 0 18px var(--cyan)}h1{max-width:980px;margin:22px 0 16px;font-size:clamp(42px,7vw,92px);line-height:.98;letter-spacing:-.055em}.gradient{background:linear-gradient(90deg,var(--blue),var(--cyan) 45%,var(--violet));-webkit-background-clip:text;color:transparent}.lead{max-width:900px;color:var(--muted);font-size:clamp(17px,2vw,22px)}.metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:34px}.metric{padding:18px;border:1px solid var(--line);border-radius:18px;background:#0d1424cc}.metric strong{display:block;font-size:28px;color:white}.metric span{color:var(--muted)}
+    .flow{position:sticky;top:0;z-index:5;border-block:1px solid var(--line);background:#070a12e8;backdrop-filter:blur(16px)}.flow .shell{display:flex;gap:10px;overflow:auto;padding:12px 0}.flow a{flex:none;text-decoration:none;padding:7px 11px;border-radius:10px;color:var(--muted);border:1px solid transparent}.flow a:hover{color:white;border-color:#40527b;background:#111a2e}
+    .section-head{display:flex;justify-content:space-between;gap:24px;align-items:end;padding:64px 0 20px}.section-head h2{margin:0;font-size:clamp(28px,4vw,52px);letter-spacing:-.035em}.section-head p{max-width:680px;margin:0;color:var(--muted)}.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:22px;padding-bottom:72px}.card{overflow:hidden;border:1px solid var(--line);border-radius:24px;background:linear-gradient(145deg,#141d32,#0b101c);box-shadow:0 24px 80px #0005;transition:.25s}.card:hover{transform:translateY(-3px);border-color:#526da2}.frame{aspect-ratio:1440/1024;overflow:hidden;background:#090d18}.frame img{width:100%;height:100%;object-fit:cover;display:block}.meta{padding:18px 20px 21px}.step{font:700 12px/1.2 ui-monospace,SFMono-Regular,Consolas,monospace;color:var(--cyan);letter-spacing:.08em}.meta h3{margin:7px 0 4px;font-size:21px}.meta p{margin:0;color:var(--muted)}.full{margin-bottom:86px;border:1px solid #495d8b;border-radius:28px;overflow:hidden;background:#0c1220}.full img{display:block;width:100%;max-height:76vh;object-fit:contain;object-position:top;background:#080b13}.full .meta{padding:22px 24px}.boundary{margin:0 0 90px;padding:26px;border:1px dashed #526588;border-radius:22px;background:#10182a}.boundary h2{margin-top:0}.boundary p{color:var(--muted)}footer{padding:26px 0 48px;border-top:1px solid var(--line);color:var(--muted)}
+    @media(max-width:900px){.metrics{grid-template-columns:repeat(2,1fr)}.grid{grid-template-columns:1fr}.section-head{align-items:start;flex-direction:column}.hero{padding-top:54px}}@media(max-width:520px){.metrics{grid-template-columns:1fr 1fr}.metric{padding:14px}.metric strong{font-size:23px}.shell{width:min(calc(100% - 20px),var(--max))}}
+  </style>
+</head>
+<body>
+  <header class="hero shell">
+    <div class="eyebrow"><span class="dot"></span>PRODUCT UX CASE STUDY · EDITABLE SVG</div>
+    <h1>把复杂叙事制作，变成一条<span class="gradient">看得见、控得住、验得过</span>的工作流。</h1>
+    <p class="lead">影游交互制作工作台是一套面向互动影游制作的高保真产品原型：从素材导入、角色与分支建模，到 Storylet、变量触发、多人推演、试玩回放与导出协作。</p>
+    <div class="metrics">
+      <div class="metric"><strong>14</strong><span>关键产品页面</span></div>
+      <div class="metric"><strong>1440×1024</strong><span>统一单页画板</span></div>
+      <div class="metric"><strong>11</strong><span>创作与验收阶段</span></div>
+      <div class="metric"><strong>100%</strong><span>矢量可编辑</span></div>
+    </div>
+  </header>
+  <nav class="flow"><div class="shell"><a href="#s01">总控</a><a href="#s02">素材</a><a href="#s03">策略</a><a href="#s04">世界观</a><a href="#s05">角色</a><a href="#s06">分支</a><a href="#s07">变量</a><a href="#s08">Storylet</a><a href="#s09">细化</a><a href="#s10">推演</a><a href="#s11">审校</a><a href="#s12">试玩</a><a href="#s13">导出</a></div></nav>
+  <main class="shell">
+    <section class="section-head"><div><div class="step">END-TO-END FLOW</div><h2>从创作输入到可交付 Demo</h2></div><p>每个页面对应一个清晰的用户任务和阶段产物；开放式 AI 生成被拆成可确认、可回溯、可复审的步骤。</p></section>
+    <section class="grid" id="gallery">
+      <article class="card" id="s00"><div class="frame"><img loading="lazy" src="assets/00_UI_设计系统_总览.svg" alt="UI 设计系统总览"></div><div class="meta"><div class="step">00 · SYSTEM</div><h3>UI 设计系统</h3><p>统一导航、状态、颜色、组件与信息密度，为复杂创作工作台建立一致心智。</p></div></article>
+      <article class="card" id="s01"><div class="frame"><img loading="lazy" src="assets/01_项目总览_总控工作台.svg" alt="项目总览总控工作台"></div><div class="meta"><div class="step">01 · COMMAND CENTER</div><h3>项目总览与总控</h3><p>集中呈现项目阶段、关键对象、风险与下一步，让创作链路不再黑箱。</p></div></article>
+      <article class="card" id="s02"><div class="frame"><img loading="lazy" src="assets/02_素材导入_剧本提取.svg" alt="素材导入剧本提取"></div><div class="meta"><div class="step">02 · INGEST</div><h3>素材导入与剧本提取</h3><p>将文本、图片与备注转为可编辑对象，并保留来源与待确认项。</p></div></article>
+      <article class="card" id="s03"><div class="frame"><img loading="lazy" src="assets/03_改编策略_影游母体.svg" alt="改编策略影游母体"></div><div class="meta"><div class="step">03 · ADAPTATION</div><h3>改编策略与影游母体</h3><p>先定义体验目标、主冲突与互动密度，再进入分支生成。</p></div></article>
+      <article class="card" id="s04"><div class="frame"><img loading="lazy" src="assets/04_世界观文件_互动规则.svg" alt="世界观文件互动规则"></div><div class="meta"><div class="step">04 · WORLD MODEL</div><h3>世界观文件与互动规则</h3><p>把设定、约束和玩家可操作边界组织为可引用的结构化知识。</p></div></article>
+      <article class="card" id="s05"><div class="frame"><img loading="lazy" src="assets/05_角色阵营_信息差筹码.svg" alt="角色阵营信息差筹码"></div><div class="meta"><div class="step">05 · CHARACTER STATE</div><h3>角色阵营与信息差</h3><p>围绕角色目标、关系、掌握信息和叙事筹码设计冲突。</p></div></article>
+      <article class="card" id="s06"><div class="frame"><img loading="lazy" src="assets/06_主线合流_真实分歧.svg" alt="主线合流真实分歧"></div><div class="meta"><div class="step">06 · BRANCH GRAPH</div><h3>主线合流与真实分歧</h3><p>在可控成本下定义改变状态的分歧、回收点与结局路径。</p></div></article>
+      <article class="card" id="s07"><div class="frame"><img loading="lazy" src="assets/07_变量与触发规则_低代码编辑.svg" alt="变量与触发规则低代码编辑"></div><div class="meta"><div class="step">07 · LOW-CODE LOGIC</div><h3>变量与触发规则</h3><p>用低代码心智表达条件、状态变化和跨章影响，降低逻辑维护成本。</p></div></article>
+      <article class="card" id="s08"><div class="frame"><img loading="lazy" src="assets/08_Storylet剧情块_卡片工作台.svg" alt="Storylet 剧情块卡片工作台"></div><div class="meta"><div class="step">08 · STORYLET</div><h3>Storylet 卡片工作台</h3><p>用可组合剧情块承载进入条件、演出内容与退出状态。</p></div></article>
+      <article class="card" id="s09"><div class="frame"><img loading="lazy" src="assets/09_剧情细化_选项与后果.svg" alt="剧情细化选项与后果"></div><div class="meta"><div class="step">09 · CONSEQUENCE</div><h3>剧情细化与选项后果</h3><p>同时编辑玩家文案、即时反馈与长期后果，避免“伪选择”。</p></div></article>
+      <article class="card" id="s10"><div class="frame"><img loading="lazy" src="assets/10_多人推演_并行行动信息差.svg" alt="多人推演并行行动信息差"></div><div class="meta"><div class="step">10 · SIMULATION</div><h3>多人推演与并行行动</h3><p>围绕角色视角、并行行动和信息差检查叙事一致性。</p></div></article>
+      <article class="card" id="s11"><div class="frame"><img loading="lazy" src="assets/11_审校修补_逻辑质量控制.svg" alt="审校修补逻辑质量控制"></div><div class="meta"><div class="step">11 · QUALITY GATE</div><h3>审校修补与逻辑质控</h3><p>集中暴露断链、变量冲突、角色越界和未回收伏笔，并给出修补入口。</p></div></article>
+      <article class="card" id="s12"><div class="frame"><img loading="lazy" src="assets/12_试玩预览_分支回放.svg" alt="试玩预览分支回放"></div><div class="meta"><div class="step">12 · PLAYTEST</div><h3>试玩预览与分支回放</h3><p>在交付前按路线回放选择与状态变化，让体验验收有据可查。</p></div></article>
+      <article class="card" id="s13"><div class="frame"><img loading="lazy" src="assets/13_导出交付_团队协作.svg" alt="导出交付团队协作"></div><div class="meta"><div class="step">13 · DELIVERY</div><h3>导出交付与团队协作</h3><p>把版本、格式、责任人与交付状态放进同一视图，闭合制作链路。</p></div></article>
+    </section>
+    <section class="full"><img loading="lazy" src="assets/AVG_全套UI画板_可编辑.svg" alt="AVG Studio 全套 UI 画板"><div class="meta"><div class="step">MASTER CANVAS · 3168×8272</div><h3>全套可编辑总画板</h3><p>适合一屏审阅整体信息架构，也可继续拆解为可点击原型或前端组件。</p></div></section>
+    <section class="boundary"><h2>作品边界</h2><p>本项目展示产品信息架构、交互流程与视觉原型能力。它不声称已经上线、获得真实业务指标或接入生产模型；画板不包含客户素材、内部 Prompt、账号凭据或密钥。</p></section>
+  </main>
+  <footer><div class="shell">影游交互制作工作台 · Product UX Prototype · Portfolio Use</div></footer>
+</body>
+</html>
+
