@@ -34,9 +34,9 @@
 
 ![Static workbench prototype](docs/images/workbench.svg)
 
-### AVG Demo Editor · 影游 Demo 制作工作台
+### 影游交互制作工作台
 
-[`showcase/avg-demo-editor/`](showcase/avg-demo-editor/) 收录一套独立的高保真产品交互原型：用 **14 个可编辑 SVG 画板**覆盖素材导入、改编策略、角色/分支建模、变量触发、Storylet、多人推演、逻辑审校、试玩回放与导出协作。它用于展示复杂 AI 创作产品的信息架构和交互设计，不冒充已上线的商业编辑器。
+[`showcase/avg-demo-editor/`](showcase/avg-demo-editor/) 收录一套独立的高保真产品交互原型：用 **14 个可编辑 SVG 画板**覆盖素材导入、改编策略、角色/分支建模、变量触发、Storylet、多人推演、逻辑审校、试玩回放与导出协作。它用于展示复杂 AI 创作产品的信息架构和交互设计，不冒充已上线的商业工作台。
 
 [查看案例说明](showcase/avg-demo-editor/README.md) · [打开响应式画廊](showcase/avg-demo-editor/index.html)
 
@@ -86,7 +86,7 @@ examples/input/       合成正常样例与合成 Bad Case
 examples/output/      精简合成输出
 demo/                 可直接本地打开的静态产品原型
 docs/                 架构、数据流和 GitHub 可渲染 SVG
-showcase/              AVG 影游 Demo 编辑器高保真交互原型
+showcase/              影游交互制作工作台高保真原型
 LICENSE               作品集专用保留权利声明
 ```
 
@@ -108,3 +108,4 @@ LICENSE               作品集专用保留权利声明
 ## English overview
 
 This repository is a privacy-safe portfolio reconstruction built from scratch with synthetic data. It demonstrates local context selection, branch and variable validation, quality gates, review planning, and SHA-256 receipts. It contains no proprietary prompts, scripts, story content, customer data, backups, secrets, or original Git history.
+
