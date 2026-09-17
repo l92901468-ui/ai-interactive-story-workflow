@@ -1,14 +1,21 @@
 {
   "name": "ai-interactive-story-workflow",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "private": true,
   "description": "Privacy-safe portfolio reconstruction of an AI-assisted interactive story workflow.",
   "type": "commonjs",
   "scripts": {
-    "check": "node --check src/hash.js && node --check src/context-selector.js && node --check src/validators.js && node --check src/quality-gates.js && node --check src/workflow.js && node --check src/cli.js && node --check demo/app.js",
+    "check": "node --check src/hash.js && node --check src/tokenize.js && node --check src/context-selector.js && node --check src/knowledge-base.js && node --check src/validators.js && node --check src/quality-gates.js && node --check src/llm-mock.js && node --check src/agents.js && node --check src/orchestrator.js && node --check src/revision-diff.js && node --check src/feedback.js && node --check src/generation-log.js && node --check src/no-regression.js && node --check src/workflow.js && node --check src/cli.js && node --check demo/app.js",
     "test": "node --test",
     "example": "node src/cli.js examples/input/synthetic-story.json",
-    "example:badcase": "node src/cli.js examples/input/synthetic-badcase.json"
+    "example:badcase": "node src/cli.js examples/input/synthetic-badcase.json",
+    "run": "node src/cli.js run",
+    "feedback": "node src/cli.js feedback",
+    "pending": "node src/cli.js pending",
+    "attribute": "node src/cli.js attribute",
+    "propose": "node src/cli.js propose",
+    "apply": "node src/cli.js apply",
+    "audit": "node src/cli.js audit"
   },
   "engines": {
     "node": ">=18"

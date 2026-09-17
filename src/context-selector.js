@@ -1,23 +1,15 @@
+// 轻量上下文选择。
+//
+// 这一版把打分搬到了 KnowledgeBase 里（见 knowledge-base.js），这里只保留
+// 对外契约：输入 query + evidence，输出选中项、排除项、平均分、置信度与不确定项。
+// 输出结构与之前完全一致，历史快照仍可比对。
+
 const { sha256 } = require('./hash');
-
-function tokenize(value) {
-  const source = String(value || '').toLowerCase();
-  const latin = source.match(/[a-z0-9][a-z0-9_-]{1,}/g) || [];
-  const hanRuns = source.match(/[\p{Script=Han}]+/gu) || [];
-  const han = [];
-  for (const run of hanRuns) {
-    if (run.length === 1) han.push(run);
-    for (let index = 0; index < run.length - 1; index += 1) han.push(run.slice(index, index + 2));
-  }
-  return [...new Set([...latin, ...han])];
-}
-
-function searchableText(item) {
-  return [item.id, item.title, item.kind, item.text, ...(item.tags || [])].filter(Boolean).join(' ');
-}
+const { tokenize } = require('./tokenize');
+const { KnowledgeBase } = require('./knowledge-base');
 
 function scoreEvidence(queryTokens, item) {
-  const evidenceTokens = new Set(tokenize(searchableText(item)));
+  const evidenceTokens = new Set(tokenize([item.id, item.title, item.kind, item.text].concat(item.tags || []).filter(Boolean).join(' ')));
   const overlap = queryTokens.filter((token) => evidenceTokens.has(token));
   const base = queryTokens.length ? overlap.length / queryTokens.length : 0;
   const confidenceWeight = Number.isFinite(item.confidence) ? Math.max(0.4, item.confidence) : 0.8;
@@ -31,21 +23,27 @@ function confidenceLabel(score) {
   return 'low';
 }
 
-function selectContext(query, evidence, settings = {}) {
-  const topK = Math.max(1, Number(settings.topK || 3));
-  const minScore = Number(settings.minContextScore || 0.08);
+function selectContext(query, evidence, settings, options) {
+  const opts = options || {};
+  const topK = Math.max(1, Number((settings || {}).topK || 3));
+  const minScore = Number((settings || {}).minContextScore || 0.08);
   const queryTokens = tokenize(query);
-  const ranked = (evidence || [])
-    .map((item) => ({ ...item, score: scoreEvidence(queryTokens, item) }))
-    .sort((left, right) => right.score - left.score || left.id.localeCompare(right.id));
-  let selected = ranked.filter((item) => item.score >= minScore).slice(0, topK);
-  if (!selected.length && ranked.length) selected = ranked.slice(0, 1);
+
+  // 复用调用方已有的知识库（含编剧改稿），否则临时建一个。
+  // includeDerived=false：由查询本身派生出来的概述条目不参与打分。
+  const kb = opts.knowledgeBase || new KnowledgeBase({ documents: evidence || [] });
+  const result = kb.search(query, { topK: topK, minScore: minScore, includeDerived: false });
+  const selected = result.hits;
+
   const averageScore = selected.length
     ? selected.reduce((sum, item) => sum + item.score, 0) / selected.length
     : 0;
+
   const uncertainties = selected
     .filter((item) => item.uncertainty)
     .map((item) => ({ evidenceId: item.id, note: item.uncertainty, needsHumanReview: true }));
+
+  // 保持历史输出结构，避免既有快照与回执失效
   const compactSelection = selected.map((item) => ({
     id: item.id,
     kind: item.kind,
@@ -56,16 +54,18 @@ function selectContext(query, evidence, settings = {}) {
     tags: item.tags || [],
     uncertainty: item.uncertainty || null
   }));
+
   return {
-    query,
-    queryTokens,
+    query: query,
+    queryTokens: queryTokens,
     selected: compactSelection,
-    excludedIds: ranked.filter((item) => !selected.some((choice) => choice.id === item.id)).map((item) => item.id),
+    hits: selected,
+    excludedIds: result.excludedIds,
     averageScore: Number(averageScore.toFixed(4)),
     confidence: confidenceLabel(averageScore),
-    uncertainties,
+    uncertainties: uncertainties,
     contextHash: sha256(compactSelection)
   };
 }
 
-module.exports = { tokenize, scoreEvidence, selectContext };
+module.exports = { tokenize: tokenize, scoreEvidence: scoreEvidence, selectContext: selectContext, confidenceLabel: confidenceLabel };

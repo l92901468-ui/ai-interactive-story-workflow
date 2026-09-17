@@ -13,3 +13,8 @@ tmp/
 secrets/
 private-data/
 examples/output/*.local.json
+
+# 运行期状态与编剧正文：一律不入库
+state/
+private/
+*.local.txt
