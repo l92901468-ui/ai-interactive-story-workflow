@@ -19,6 +19,7 @@ const { runWorkflow } = require('./workflow');
 const { stableStringify } = require('./hash');
 const { FeedbackLedger } = require('./feedback');
 const { KnowledgeBase } = require('./knowledge-base');
+const { collectHealth, evaluate } = require('./health');
 const { DEFAULT_ROUTE } = require('./agents');
 
 function parseArgs(argv) {
@@ -124,6 +125,8 @@ function commandFeedback(args) {
   if (kb) kb.save(stateDir(args.flags));
   out({
     recorded: { eventId: result.event.eventId, kind: result.event.feedback.kind },
+    // 幂等：同一份内容重复提交时这里是 true，事件不会重复记
+    replayed: result.replayed === true,
     learnedImmediately: result.learnedImmediately,
     knowledgeIngested: result.knowledgeIngested,
     pendingAttribution: result.pendingAttribution.map((item) => item.pendingId),
@@ -164,7 +167,17 @@ function commandAttribute(args) {
   ledger.proposeRouteChanges();
   ledger.save(stateDir(args.flags));
   if (kb) kb.save(stateDir(args.flags));
-  out({ pending: result.pending.pendingId, attribution: result.pending.attribution, adjustments: result.adjustments, ledger: ledger.summary() });
+  out({
+    pending: result.pending.pendingId,
+    state: result.pending.state,
+    attribution: result.pending.attribution,
+    adjustments: result.adjustments,
+    // 幂等：同一条差分重复归因时这里给出原因，且不会再调权
+    replayed: result.replayed === true,
+    blockedBy: result.blockedBy || null,
+    reason: result.reason || null,
+    ledger: ledger.summary()
+  });
 }
 
 function commandPropose(args) {
@@ -185,9 +198,63 @@ function commandPropose(args) {
 
 function commandApply(args) {
   const ledger = loadLedger(args.flags);
-  const result = ledger.applyRouteChange(String(args.flags.proposal || ''), { by: 'human' });
+  const proposalId = String(args.flags.proposal || '');
+  const result = ledger.applyRouteChange(proposalId, { by: 'human' });
   ledger.save(stateDir(args.flags));
-  out({ applied: result.applied, route: result.route || ledger.route, reason: result.reason || null, ledger: ledger.summary() });
+
+  const payload = { applied: result.applied, route: result.route || ledger.route, reason: result.reason || null, ledger: ledger.summary() };
+
+  // --verify=<project.json>：应用后立刻用新路径跑一次并复检不回退清单。
+  // 过不了就自动回滚——改动本身要能被撤销，否则「复检」没有意义。
+  const verifyProject = args.flags.verify;
+  if (result.applied && verifyProject && typeof verifyProject === 'string') {
+    const project = readJson(verifyProject);
+    const kb = loadKnowledge(args.flags, project);
+    const rerun = runWorkflow(project, { route: ledger.route, knowledgeBase: kb || undefined });
+    payload.verified = {
+      status: rerun.receipt.status,
+      noRegressionPassed: rerun.receipt.noRegressionPassed,
+      failedIds: rerun.snapshot.noRegression.failedIds
+    };
+    if (!rerun.receipt.noRegressionPassed) {
+      const rolled = ledger.rollbackRoute({ proposalId: proposalId });
+      payload.verified.rolledBack = rolled.rolledBack;
+      payload.verified.reason = '新路径未通过不回退清单，已自动回滚';
+      payload.route = ledger.route;
+    }
+    ledger.save(stateDir(args.flags));
+    if (kb) kb.save(stateDir(args.flags));
+  }
+  out(payload);
+}
+
+function commandRollback(args) {
+  const ledger = loadLedger(args.flags);
+  const options = {};
+  if (args.flags.proposal && args.flags.proposal !== true) options.proposalId = String(args.flags.proposal);
+  const result = ledger.rollbackRoute(options);
+  ledger.save(stateDir(args.flags));
+  out({ rolledBack: result.rolledBack, route: result.route || ledger.route, proposalId: result.proposalId || null, reason: result.reason || null, ledger: ledger.summary() });
+}
+
+function commandEscalate(args) {
+  const ledger = loadLedger(args.flags);
+  const hours = Number(args.flags['max-age-hours'] === true ? 168 : args.flags['max-age-hours'] || 168);
+  const escalated = ledger.escalateStalePending(hours * 3600 * 1000);
+  ledger.save(stateDir(args.flags));
+  out({ escalated: escalated, thresholdHours: hours, ledger: ledger.summary() });
+}
+
+function commandHealth(args) {
+  const ledger = loadLedger(args.flags);
+  const project = args.flags.project ? readJson(args.flags.project) : null;
+  const kb = loadKnowledge(args.flags, project);
+  let result = null;
+  if (project) result = runWorkflow(project, { route: ledger.route || undefined, knowledgeBase: kb || undefined });
+
+  const health = collectHealth({ ledger: ledger, knowledgeBase: kb, result: result });
+  const verdict = evaluate(health, null);
+  out({ healthy: verdict.healthy, breaches: verdict.breaches, thresholds: verdict.thresholds, health: health });
 }
 
 function commandAudit(args) {
@@ -206,6 +273,9 @@ const COMMANDS = {
   attribute: commandAttribute,
   propose: commandPropose,
   apply: commandApply,
+  rollback: commandRollback,
+  escalate: commandEscalate,
+  health: commandHealth,
   audit: commandAudit
 };
 

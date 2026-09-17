@@ -13,6 +13,13 @@ const path = require('node:path');
 const { sha256 } = require('./hash');
 const { diffSummary } = require('./revision-diff');
 const { interpretFeedback } = require('./llm-mock');
+const {
+  PENDING_STATES,
+  PENDING_TRANSITIONS,
+  PROPOSAL_STATES,
+  PROPOSAL_TRANSITIONS,
+  transition
+} = require('./state-machine');
 
 const KINDS = { VERDICT: 'verdict', COMMENT: 'comment', REVISION: 'revision' };
 
@@ -74,21 +81,51 @@ function normalizeFeedback(input) {
   };
 }
 
+// 幂等键：同样的反馈内容提交两次，第二次应当重放而不是重复生效。
+// 只取内容本身，不含时间戳——否则换个时间提交就成了新事件。
+function contentHashOf(normalized) {
+  return sha256(JSON.stringify({
+    kind: normalized.kind,
+    aspects: normalized.aspects,
+    textHash: normalized.textHash || null,
+    parentTextHash: normalized.parentTextHash || null,
+    sceneId: normalized.sceneId || null,
+    revisionId: normalized.revisionId || null
+  }));
+}
+
 class FeedbackLedger {
   constructor(options) {
-    this.projectId = options.projectId || 'unknown';
-    this.events = options.events || [];
-    this.pending = options.pending || [];
-    this.proposals = options.proposals || [];
-    this.route = options.route || null;
-    this.version = options.version || 0;
+    const opts = options || {};
+    this.projectId = opts.projectId || 'unknown';
+    this.events = opts.events || [];
+    this.pending = opts.pending || [];
+    this.proposals = opts.proposals || [];
+    this.route = opts.route || null;
+    this.routeHistory = opts.routeHistory || [];
+    this.version = opts.version || 0;
   }
 
   // ---- 记录一次反馈 ----
   record(input, context) {
     const normalized = normalizeFeedback(input);
+    const contentHash = contentHashOf(normalized);
+
+    // 幂等：内容相同就直接重放上一条，不再入库、不再调权
+    const duplicate = this.events.find((item) => item.contentHash === contentHash);
+    if (duplicate) {
+      return {
+        event: duplicate,
+        replayed: true,
+        learnedImmediately: [],
+        knowledgeIngested: [],
+        pendingAttribution: []
+      };
+    }
+
     const event = {
       eventId: 'fb_' + sha256(JSON.stringify({ normalized: normalized, at: input.receivedAt || null })).slice(0, 12),
+      contentHash: contentHash,
       projectId: this.projectId,
       receivedAt: input.receivedAt || new Date().toISOString(),
       feedback: normalized
@@ -160,7 +197,8 @@ class FeedbackLedger {
           eventId: event.eventId,
           hunk: hunk,
           evidenceIds: (input.generationEvidenceIds || []).slice(),
-          state: 'awaiting_attribution'
+          state: PENDING_STATES.AWAITING,
+          createdAt: event.receivedAt
         });
       }
       this.pending = this.pending.concat(pendingAttribution);
@@ -178,8 +216,13 @@ class FeedbackLedger {
     if (!ATTRIBUTION_LAYERS[input.layer]) throw new Error('归因层必须是：' + Object.keys(ATTRIBUTION_LAYERS).join(' / '));
     if (!SCOPES[input.scope]) throw new Error('结论范围必须是：' + Object.keys(SCOPES).join(' / '));
 
+    // 幂等：已经处理过的条目再归因一次，重放结论但不重复调权
+    if (item.state === PENDING_STATES.ATTRIBUTED) {
+      return { pending: item, adjustments: [], replayed: true, blockedBy: 'already_attributed', reason: '该差分已归因，重复调用不会再次调权' };
+    }
+
     item.attribution = { layer: input.layer, scope: input.scope, reason: input.reason || '', by: input.by || 'human' };
-    item.state = 'attributed';
+    transition(item, PENDING_STATES.ATTRIBUTED, { table: PENDING_TRANSITIONS, field: 'state' });
 
     const adjustments = [];
     // 规则 2：只有 input_retrieval 才产生调权证据，且只针对真正进了本次生成包的资料
@@ -218,7 +261,7 @@ class FeedbackLedger {
         change: { insertAfter: 'retriever', agentId: 'retrievalAuditor' },
         rationale: '多次归因到召回层，说明召回结果没有被独立复核就进入了起草',
         supportingPendingIds: supportFor('input_retrieval'),
-        status: 'awaiting_human'
+        status: PROPOSAL_STATES.AWAITING
       });
     }
     if (byLayer.prose_realization) {
@@ -228,7 +271,7 @@ class FeedbackLedger {
         change: { insertBefore: 'qualityGate', agentId: 'proseReviewer' },
         rationale: '决策正确但表达失败的归因较多，起草后、质量门前应加一次表达复核',
         supportingPendingIds: supportFor('prose_realization'),
-        status: 'awaiting_human'
+        status: PROPOSAL_STATES.AWAITING
       });
     }
     if (byLayer.scene_decision) {
@@ -238,7 +281,7 @@ class FeedbackLedger {
         change: { moveEarlier: 'planner' },
         rationale: '事件所有权与顺序问题来自规划阶段，规划应更早锁定并复核',
         supportingPendingIds: supportFor('scene_decision'),
-        status: 'awaiting_human'
+        status: PROPOSAL_STATES.AWAITING
       });
     }
 
@@ -252,10 +295,21 @@ class FeedbackLedger {
   applyRouteChange(proposalId, options) {
     const proposal = this.proposals.find((item) => item.proposalId === proposalId);
     if (!proposal) throw new Error('没有这条路径改进建议：' + proposalId);
-    if (proposal.status === 'applied') return { applied: false, reason: '已经应用过' };
+
+    let moved;
+    try {
+      moved = transition(proposal, PROPOSAL_STATES.APPLIED, { table: PROPOSAL_TRANSITIONS, field: 'status' });
+    } catch (error) {
+      // 非法跳转不抛给调用方，而是带上原因返回，便于人工判断下一步
+      return { applied: false, reason: error.message };
+    }
+    if (!moved.changed) return { applied: false, reason: moved.reason === 'already_in_state' ? '已经应用过' : '当前状态不允许应用' };
 
     const base = (options && options.route) || this.route;
     if (!base) return { applied: false, reason: '没有当前 route，无法应用' };
+
+    // 改动前先把当前路径存进历史，回滚时才有得退
+    this.routeHistory.push({ route: base.slice(), at: new Date().toISOString(), proposalId: proposalId });
 
     const next = base.slice();
     const change = proposal.change;
@@ -274,11 +328,44 @@ class FeedbackLedger {
     }
 
     this.route = next;
-    proposal.status = 'applied';
     proposal.appliedAt = new Date().toISOString();
     proposal.appliedBy = (options && options.by) || 'human';
     this.version += 1;
     return { applied: true, route: next };
+  }
+
+  // ---- 回滚：改完路径发现不回退清单过不了，能退回上一条 ----
+  rollbackRoute(options) {
+    const opts = options || {};
+    const history = this.routeHistory || [];
+    let entry = null;
+    if (opts.proposalId) {
+      const index = history.map((item) => item.proposalId).lastIndexOf(opts.proposalId);
+      if (index !== -1) entry = history.splice(index, 1)[0];
+    } else {
+      entry = history.pop() || null;
+    }
+    if (!entry) return { rolledBack: false, reason: '没有可回滚的路径记录' };
+
+    this.route = entry.route.slice();
+    const proposal = this.proposals.find((item) => item.proposalId === entry.proposalId);
+    if (proposal) transition(proposal, PROPOSAL_STATES.ROLLED_BACK, { table: PROPOSAL_TRANSITIONS, field: 'status' });
+    this.version += 1;
+    return { rolledBack: true, route: this.route, proposalId: entry.proposalId };
+  }
+
+  // ---- 挂起过久的差分升级，避免一直没人处理 ----
+  escalateStalePending(maxAgeMs) {
+    const now = Date.now();
+    const escalated = [];
+    for (const item of this.pending) {
+      if (item.state !== PENDING_STATES.AWAITING) continue;
+      const created = Date.parse(item.createdAt || 0);
+      if (!Number.isFinite(created) || now - created <= maxAgeMs) continue;
+      transition(item, PENDING_STATES.ESCALATED, { table: PENDING_TRANSITIONS, field: 'state' });
+      escalated.push(item.pendingId);
+    }
+    return escalated;
   }
 
   summary() {
@@ -290,7 +377,11 @@ class FeedbackLedger {
       pendingAttribution: awaiting,
       attributed: this.pending.filter((item) => item.state === 'attributed').length,
       proposals: this.proposals.length,
-      awaitingHumanProposals: this.proposals.filter((item) => item.status === 'awaiting_human').length,
+      awaitingHumanProposals: this.proposals.filter((item) => item.status === PROPOSAL_STATES.AWAITING).length,
+      appliedProposals: this.proposals.filter((item) => item.status === PROPOSAL_STATES.APPLIED).length,
+      rolledBackProposals: this.proposals.filter((item) => item.status === PROPOSAL_STATES.ROLLED_BACK).length,
+      escalated: this.pending.filter((item) => item.state === PENDING_STATES.ESCALATED).length,
+      routeHistoryLength: this.routeHistory.length,
       route: this.route
     };
   }
@@ -300,6 +391,7 @@ class FeedbackLedger {
       projectId: this.projectId,
       version: this.version,
       route: this.route,
+      routeHistory: this.routeHistory,
       events: this.events,
       pending: this.pending,
       proposals: this.proposals

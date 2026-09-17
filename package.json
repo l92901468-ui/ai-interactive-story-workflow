@@ -1,11 +1,11 @@
 {
   "name": "ai-interactive-story-workflow",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "private": true,
   "description": "Privacy-safe portfolio reconstruction of an AI-assisted interactive story workflow.",
   "type": "commonjs",
   "scripts": {
-    "check": "node --check src/hash.js && node --check src/tokenize.js && node --check src/context-selector.js && node --check src/knowledge-base.js && node --check src/validators.js && node --check src/quality-gates.js && node --check src/llm-mock.js && node --check src/agents.js && node --check src/orchestrator.js && node --check src/revision-diff.js && node --check src/feedback.js && node --check src/generation-log.js && node --check src/no-regression.js && node --check src/workflow.js && node --check src/cli.js && node --check demo/app.js",
+    "check": "node --check src/hash.js && node --check src/tokenize.js && node --check src/context-selector.js && node --check src/knowledge-base.js && node --check src/validators.js && node --check src/quality-gates.js && node --check src/state-machine.js && node --check src/llm-mock.js && node --check src/agents.js && node --check src/orchestrator.js && node --check src/revision-diff.js && node --check src/feedback.js && node --check src/generation-log.js && node --check src/no-regression.js && node --check src/health.js && node --check src/workflow.js && node --check src/cli.js && node --check demo/app.js",
     "test": "node --test",
     "example": "node src/cli.js examples/input/synthetic-story.json",
     "example:badcase": "node src/cli.js examples/input/synthetic-badcase.json",
@@ -15,6 +15,9 @@
     "attribute": "node src/cli.js attribute",
     "propose": "node src/cli.js propose",
     "apply": "node src/cli.js apply",
+    "rollback": "node src/cli.js rollback",
+    "escalate": "node src/cli.js escalate",
+    "health": "node src/cli.js health",
     "audit": "node src/cli.js audit"
   },
   "engines": {

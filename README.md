@@ -33,6 +33,10 @@
 - **编剧反馈闭环**：三种反馈形态统一处理；改好的文章入库成为下一轮语料；差分挂待归因，人工归因后才允许调权；路径改进只提建议，人工确认后才生效。
 - **权重安全门**：只有归因到 `input_retrieval` 才产生调权证据，单次调权有上限，禁用需要明确指令或两次独立负面验证。
 - **累计不回退清单**：每次改动后重跑，防止新规则把已确认的方向挤掉。
+- **幂等**：同一份反馈重复提交只记一次，同一条差分重复归因不会重复调权。
+- **状态机**：待归因与路径建议的状态跳转由转换表集中声明，非法跳转当场拒绝。
+- **健康检查**：关注闭环特有的积压——待归因数量、最老账龄、未确认的路径建议、上次生成是否过不回退清单。
+- **回滚**：应用路径改进后可回退；`apply --verify` 会先用新路径复检，过不了自动回滚。
 - **无外部依赖**：运行时只使用 Node.js 内置模块，不调用在线模型、数据库或云服务（模型调用为确定性 mock）。
 
 ## 产品原型
@@ -183,7 +187,59 @@ node src/cli.js run examples/input/synthetic-story.json
 
 回执里的 `noRegressionPassed` 就是这张清单的结果。
 
-## 六、隐私与本地文件
+## 六、工程纪律
+
+闭环跑得通只是第一步。下面这几条是为了让它长时间运行也不会悄悄跑偏。
+
+### 幂等
+
+同一份反馈提交两次，第二次是**重放**而不是新事件：内容哈希只取反馈本身，不含时间戳，所以换个时间提交也不会被当成新东西。
+
+同一条差分重复归因同理——返回 `blockedBy: already_attributed`，且**不会再调一次权重**。这一点很要紧：权重被重复累加是最难发现的漂移。
+
+### 状态机
+
+两处状态都走转换表，不再靠赋值改字段：
+
+```
+待归因差分:  awaiting_attribution → attributed / dismissed / escalated
+             escalated            → attributed / dismissed
+             attributed, dismissed 为终态
+
+路径建议:    awaiting_human → applied / rejected
+             applied        → rolled_back
+             rolled_back    → applied
+             rejected 为终态
+```
+
+非法跳转会带着原因被拒绝，比如否决过的建议不能再应用。
+
+### 健康检查
+
+`node src/cli.js health` 给出的是这条闭环特有的积压指标：
+
+| 指标 | 含义 | 默认上限 |
+|---|---|---|
+| `pending.awaiting` | 压在人工手上的差分数量 | 50 |
+| `pending.oldestAgeSec` | 最老一条压了多久 | 7 天 |
+| `proposals.awaiting` | 未确认的路径建议数量 | 10 |
+| `lastRun.noRegressionPassed` | 上次生成是否过了不回退清单 | 必须为真 |
+
+超过任一上限，`healthy` 就是 false，并列出越界项。挂太久的差分可以用 `escalate` 单独升级出来催办。
+
+### 回滚与复检
+
+路径改了要能退回去。每次 `apply` 都会先把当前路径存进 `routeHistory`，之后可以 `rollback` 回到上一条。
+
+更进一步，`apply --verify=<project.json>` 会在应用后**立刻用新路径跑一次生成并复检不回退清单**，过不了就自动回滚：
+
+```bash
+node src/cli.js apply --proposal=<id> --verify=examples/input/synthetic-story.json
+```
+
+这对应原项目调优循环里的「从源输入重新生成 → 用新候选验证 → 必要时回退」。
+
+## 七、隐私与本地文件
 
 - 运行时不联网、不调用任何在线模型
 - 编剧正文通过 `--text-file` 从本地读入，建议放 `private/`
@@ -192,7 +248,7 @@ node src/cli.js run examples/input/synthetic-story.json
 
 > 换句话说：你可以拿真实剧本在本地跑这套流程，但那些内容不会跟着提交上去。
 
-## 七、数据流
+## 八、数据流
 
 1. 读取带有 `metadata.synthetic=true` 的 JSON；非合成输入会被拒绝。
 2. 建知识库，按槽位召回，并显式保留不确定项。
@@ -203,11 +259,11 @@ node src/cli.js run examples/input/synthetic-story.json
 
 ![Receipt and audit trail](docs/images/receipt-audit.svg)
 
-## 八、目录结构
+## 九、目录结构
 
 ```text
 src/                  多 Agent、知识库、差分与反馈、质量门、回执
-test/                 Node 原生测试（33 个）
+test/                 Node 原生测试（47 个）
 examples/input/       合成正常样例与合成 Bad Case
 examples/output/      精简合成输出
 demo/                 可直接本地打开的静态产品原型
@@ -231,10 +287,12 @@ LICENSE               作品集专用保留权利声明
 | `src/feedback.js` | 反馈总账：立即学习 / 待归因 / 路径提案 |
 | `src/generation-log.js` | 生成期持久日志与证据完整度判定 |
 | `src/no-regression.js` | 累计不回退清单 |
+| `src/state-machine.js` | 状态转换表，非法跳转直接拒绝 |
+| `src/health.js` | 健康检查指标与阈值判定 |
 | `src/llm-mock.js` | 确定性模拟模型，替换真实 API 时接口不变 |
 | `src/workflow.js` | 编排入口，产出 snapshot 与 receipt |
 
-## 九、Bad Case 回归示例
+## 十、Bad Case 回归示例
 
 仓库提供一个故意破坏的合成输入，包含悬空边、不可达节点、选择分支数不足、失败分支缺失、死路和变量生命周期缺口。测试会验证这些问题能够被稳定识别并生成可读修复计划；计划需人工确认、修改输入后重新运行。
 
