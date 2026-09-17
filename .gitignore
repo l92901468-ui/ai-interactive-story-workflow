@@ -18,3 +18,5 @@ examples/output/*.local.json
 state/
 private/
 *.local.txt
+ci/reports/
+cd/reports/

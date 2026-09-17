@@ -38,6 +38,7 @@
 - **健康检查**：关注闭环特有的积压——待归因数量、最老账龄、未确认的路径建议、上次生成是否过不回退清单。
 - **回滚**：应用路径改进后可回退；`apply --verify` 会先用新路径复检，过不了自动回滚。
 - **无外部依赖**：运行时只使用 Node.js 内置模块，不调用在线模型、数据库或云服务（模型调用为确定性 mock）。
+- **CI/CD**：GitHub Actions 跑矩阵测试与扫描；本地流水线 push→build→test→scan，发布走 staging 门禁→prod 门禁→失败回滚。
 
 ## 产品原型
 
@@ -239,7 +240,30 @@ node src/cli.js apply --proposal=<id> --verify=examples/input/synthetic-story.js
 
 这对应原项目调优循环里的「从源输入重新生成 → 用新候选验证 → 必要时回退」。
 
-## 七、隐私与本地文件
+## 七、CI / CD
+
+完整说明见 [`docs/cicd.md`](docs/cicd.md)。
+
+**GitHub Actions**（`.github/workflows/ci.yml`）在 push 与 PR 时真跑：Node 18/20/22 三档矩阵做语法检查与单元测试、扫描门禁、镜像构建与容器内测试。
+
+**本地流水线**与另一条流水线同一套形状：
+
+```
+CI:  push -> build -> test -> scan                    bash ci/ci.sh
+CD:  image -> staging 门禁 -> prod 门禁 -> 失败回滚    bash cd/deploy.sh --image=<tag> [--env=prod]
+```
+
+`bash pipeline.sh` 把两者串起来：CI 产出的镜像写进 `ci/reports/last_build.json`，CD 从那里取，两边不是各跑各的。
+
+三个刻意的设计：
+
+1. **门禁判据 = 运行期判据**：`cd/health_gate.js` 直接复用 `src/health.js` 的 `evaluate()`，不另写阈值。
+2. **staging 不过绝不进 prod**；prod 不过就把 `stable` 指回上一个 good 版本，并按基线复检。
+3. **模拟的部分标出来**：只有镜像漏洞扫描是模拟的（本机无 trivy），输出里标 `[模拟]`；语法、敏感信息、静态规则、依赖成分、容器内测试、门禁与回滚复检都是真的。
+
+这个项目是 CLI / 库，没有常驻服务，所以「部署」= 镜像打环境 tag 并在镜像里真跑一次生成 + 健康检查；「回滚」= tag 指回上一个 good 版本再复检。
+
+## 八、隐私与本地文件
 
 - 运行时不联网、不调用任何在线模型
 - 编剧正文通过 `--text-file` 从本地读入，建议放 `private/`
@@ -248,7 +272,7 @@ node src/cli.js apply --proposal=<id> --verify=examples/input/synthetic-story.js
 
 > 换句话说：你可以拿真实剧本在本地跑这套流程，但那些内容不会跟着提交上去。
 
-## 八、数据流
+## 九、数据流
 
 1. 读取带有 `metadata.synthetic=true` 的 JSON；非合成输入会被拒绝。
 2. 建知识库，按槽位召回，并显式保留不确定项。
@@ -259,7 +283,7 @@ node src/cli.js apply --proposal=<id> --verify=examples/input/synthetic-story.js
 
 ![Receipt and audit trail](docs/images/receipt-audit.svg)
 
-## 九、目录结构
+## 十、目录结构
 
 ```text
 src/                  多 Agent、知识库、差分与反馈、质量门、回执
@@ -267,7 +291,10 @@ test/                 Node 原生测试（47 个）
 examples/input/       合成正常样例与合成 Bad Case
 examples/output/      精简合成输出
 demo/                 可直接本地打开的静态产品原型
-docs/                 架构、数据流、反馈闭环与 GitHub 可渲染 SVG
+ci/                   CI 脚本与扫描器
+cd/                   部署、发布门禁、版本基线
+.github/workflows/    GitHub Actions
+docs/                 架构、数据流、反馈闭环、CI/CD 与 GitHub 可渲染 SVG
 showcase/             影游交互制作工作台高保真原型
 private/              本地私有输入（已忽略，不入库）
 state/                本地运行期状态（已忽略，不入库）
@@ -292,7 +319,7 @@ LICENSE               作品集专用保留权利声明
 | `src/llm-mock.js` | 确定性模拟模型，替换真实 API 时接口不变 |
 | `src/workflow.js` | 编排入口，产出 snapshot 与 receipt |
 
-## 十、Bad Case 回归示例
+## 十一、Bad Case 回归示例
 
 仓库提供一个故意破坏的合成输入，包含悬空边、不可达节点、选择分支数不足、失败分支缺失、死路和变量生命周期缺口。测试会验证这些问题能够被稳定识别并生成可读修复计划；计划需人工确认、修改输入后重新运行。
 

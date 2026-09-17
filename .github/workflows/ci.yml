@@ -1,0 +1,61 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  test:
+    name: Node ${{ matrix.node }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        node: [18, 20, 22]
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node }}
+
+      - name: 语法检查
+        run: npm run check
+
+      - name: 单元测试
+        run: npm test
+
+      - name: 合成样例仍可跑
+        run: |
+          npm run example > /dev/null
+          npm run example:badcase > /dev/null
+
+  scan:
+    name: 扫描门禁
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: 扫描（语法 / 敏感信息 / 静态规则 / 依赖成分）
+        run: node ci/scan.js
+
+  docker:
+    name: 镜像构建与容器内测试
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: 构建镜像
+        run: docker build -t story-workflow:ci .
+
+      - name: 校验构建产物齐全
+        run: docker run --rm story-workflow:ci sh -c 'test -f /app/src/cli.js && test -d /app/test && test -f /app/examples/input/synthetic-story.json'
+
+      - name: 容器内单元测试
+        run: docker run --rm story-workflow:ci node --test --test-reporter=spec

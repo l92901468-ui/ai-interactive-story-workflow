@@ -1,0 +1,16 @@
+{
+  "good": "story-workflow:20260917234828",
+  "history": [
+    {
+      "status": "good",
+      "image": "story-workflow:20260917234828",
+      "at": "2026-09-17T15:48:57.805Z"
+    },
+    {
+      "status": "bad",
+      "image": "story-workflow:20260917235000-bad",
+      "at": "2026-09-17T15:49:51.121Z"
+    }
+  ],
+  "bad": "story-workflow:20260917235000-bad"
+}

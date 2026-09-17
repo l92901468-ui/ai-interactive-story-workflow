@@ -18,7 +18,12 @@
     "rollback": "node src/cli.js rollback",
     "escalate": "node src/cli.js escalate",
     "health": "node src/cli.js health",
-    "audit": "node src/cli.js audit"
+    "audit": "node src/cli.js audit",
+    "ci": "bash ci/ci.sh",
+    "cd": "bash cd/deploy.sh",
+    "pipeline": "bash pipeline.sh",
+    "scan": "node ci/scan.js",
+    "gate": "node cd/health_gate.js"
   },
   "engines": {
     "node": ">=18"

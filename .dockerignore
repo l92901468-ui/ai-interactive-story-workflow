@@ -1,0 +1,14 @@
+.git
+.github
+node_modules
+state/
+private/
+*.local.json
+*.local.txt
+tmp/
+coverage/
+dist/
+*.log
+.DS_Store
+docs/images/
+showcase/
