@@ -1,44 +1,72 @@
-# AI Interactive Story Workflow
+# AI Workflow Reliability & Automation Platform
 
-> **脱敏重建版 / Privacy-safe reconstruction**  
-> 本仓库是使用全新代码与合成数据制作的公开作品集候选。它不包含任何公司或客户名称、真实剧本、内部 Prompt、业务数据、密钥、历史快照、备份或原 Git 历史。
+> **Privacy-safe clean-room reconstruction / 脱敏重建版**  
+> A deterministic Node.js automation platform for testing, validating, tracing, and safely evolving an AI workflow. Built with synthetic data only; it contains no company/client code, real scripts, internal prompts, production data, secrets, historical snapshots, backups, or original Git history.
 
-一个仅依赖 Node.js 内置模块的工作流演示。它表达的是一条完整的创作闭环：
+This portfolio project focuses on **automation infrastructure and developer reliability**, not on demonstrating prompt tricks. It turns a complex AI content workflow into a system that can be **tested, observed, gated, reproduced, and rolled back**.
 
-`合成输入 → 多 Agent 编排 → 分槽知识库召回 → 起草 → 守卫与质量门 → 复审 → 回执与持久日志`
+```
+synthetic input
+   -> orchestrated workflow
+   -> retrieval + generation
+   -> validators / quality gates
+   -> regression checks
+   -> persistent evidence
+   -> review / feedback
+   -> controlled change
+   -> verify or rollback
+```
 
-以及闭环的另一半：
+## Engineering highlights
 
-`编剧反馈（好坏 / 意见 / 改好的文章） → 差分 → 人工归因 → 调权与路径改进 → 下一轮生成`
+- **Automation & regression testing** - deterministic testable workflow, bad-case fixtures, quality gates, state-transition checks, idempotency checks, and cumulative no-regression verification.
+- **Reliability engineering** - explicit failure states, evidence-completeness checks, guarded state machines, bounded updates, verification before applying changes, and rollback on failed validation.
+- **CI/CD** - GitHub Actions on push/PR, Node 18/20/22 matrix checks, tests and scans, image build + container test, staging gate, production gate, and rollback path.
+- **Observability & traceability** - persistent generation evidence, context/plan/draft hashes, routing records, gate decisions, health metrics, and reproducible receipts.
+- **Developer tooling** - CLI workflows for run, feedback, pending attribution, proposal review, apply/verify, rollback, and health checks.
+- **AI-assisted engineering** - demonstrates how AI-facing workflows can be wrapped in deterministic validation, explainable evidence, human approval points, and safe feedback loops.
+- **No external runtime dependency** - implemented with Node.js built-ins; online model calls are replaced with a deterministic mock so the engineering behavior is reproducible.
 
-## 我的贡献与边界
+## Why this is an automation project
 
-- 这是我独立完成的 clean-room 作品集重建：由我重新设计产品范围、工作流和数据结构，并使用全新合成数据表达通用能力。
-- 我独立实现了 Node.js 核心工作流、多 Agent 编排、知识库、差分与反馈总账、质量门、哈希回执与原生测试，也独立完成静态 Demo 和全部 SVG 说明图。
-- 本仓库不代表原公司的生产代码、真实数据、线上系统或业务指标；它只用于展示本人对问题拆解和工程实现的理解。
+The original domain is interactive narrative, but the engineering problems are general:
+
+- How do we make an AI workflow reproducible enough to debug?
+- How do we detect regressions after rules or retrieval behavior change?
+- How do we distinguish valid updates from unsafe automatic learning?
+- How do we make failures observable instead of silently accepting degraded output?
+- How do we verify a change before release and roll it back when validation fails?
+
+The system therefore treats generation as an **operated workflow** rather than a one-off model call.
+
+## My contribution and boundaries
+
+- Independently designed and implemented this clean-room reconstruction, including product scope, workflow, data structures, Node.js runtime, validators, feedback ledger, state machines, health checks, CI/CD scripts, tests, static demo, and SVG architecture diagrams.
+- All examples use synthetic data and deterministic model behavior.
+- This repository **does not claim production scale**, a real device farm, live customer traffic, or Supercell-style infrastructure. It is intended to demonstrate how I reason about automation, reliability, developer tooling, testing, and controlled system change.
 
 ![Architecture overview](docs/images/architecture.svg)
 
-## 为什么做这个重建版
+## Core automation flow
 
-互动叙事与 Agent 工作流经常同时面临三类问题：上下文来源难追踪、分支/变量容易失配、修改之后缺少稳定的回归证据。本项目把这些问题压缩成一个可阅读、可运行、可测试的公开演示，同时把所有示例替换为虚构的「雾灯群岛」合成故事。
+`synthetic input -> multi-agent orchestration -> slotted retrieval -> draft -> guards / quality gates -> review -> receipt / persistent log`
 
-## 能力概览
+Feedback is handled as a controlled second loop:
 
-- **多 Agent 编排**：九个 agent 各司其职，顺序由可配置的 route 决定，每个 agent 都交代自己的权重、判定路径与耗时。
-- **分槽知识库**：资料分 `planning / style / continuity` 三槽召回，每次命中都能解释分数由哪些因子构成。
-- **生成期持久日志**：生成当时就把上下文哈希、计划哈希、草稿哈希、召回路由、每个门的权重与路径写进日志，缺任一项就标 `evidence_incomplete`。
-- **决策节点到正文的映射**：每个决策节点都能回指到它落在正文的哪几行。
-- **质量门与复审**：将上下文、图完整性、失败覆盖、变量与可追溯性组织成独立 gate，并把结论分成「可立即应用」与「待人工处理」两类。
-- **编剧反馈闭环**：三种反馈形态统一处理；改好的文章入库成为下一轮语料；差分挂待归因，人工归因后才允许调权；路径改进只提建议，人工确认后才生效。
-- **权重安全门**：只有归因到 `input_retrieval` 才产生调权证据，单次调权有上限，禁用需要明确指令或两次独立负面验证。
-- **累计不回退清单**：每次改动后重跑，防止新规则把已确认的方向挤掉。
-- **幂等**：同一份反馈重复提交只记一次，同一条差分重复归因不会重复调权。
-- **状态机**：待归因与路径建议的状态跳转由转换表集中声明，非法跳转当场拒绝。
-- **健康检查**：关注闭环特有的积压——待归因数量、最老账龄、未确认的路径建议、上次生成是否过不回退清单。
-- **回滚**：应用路径改进后可回退；`apply --verify` 会先用新路径复检，过不了自动回滚。
-- **无外部依赖**：运行时只使用 Node.js 内置模块，不调用在线模型、数据库或云服务（模型调用为确定性 mock）。
-- **CI/CD**：GitHub Actions 跑矩阵测试与扫描；本地流水线 push→build→test→scan，发布走 staging 门禁→prod 门禁→失败回滚。
+`writer feedback -> diff -> human attribution -> bounded weight/path change -> re-run -> verify -> keep or rollback`
+
+## Capability overview
+
+- **Configurable orchestration**: nine agents execute in a configurable route; each records its decision path, weights, notes, and timing.
+- **Slotted retrieval**: `planning / style / continuity` are retrieved independently with explainable scoring.
+- **Persistent execution evidence**: context hash, plan hash, draft hash, routing evidence, gate paths, and evidence completeness are stored at generation time.
+- **Quality gates**: graph integrity, variable lifecycle, continuity, failure coverage, traceability, and other checks are evaluated before accepting results.
+- **Regression protection**: confirmed behaviors are re-checked after change so new rules do not silently break previously accepted behavior.
+- **Idempotency**: repeated feedback or attribution does not double-apply learning effects.
+- **State machines**: invalid lifecycle transitions are rejected explicitly.
+- **Health checks**: tracks attribution backlog, oldest pending age, proposal backlog, and last-run regression status.
+- **Rollback**: path changes can be reverted; `apply --verify` validates the new route and automatically rolls back on failure.
+- **CI/CD**: GitHub Actions runs matrix checks and scans; local deployment gates staging before prod and verifies rollback behavior.
 
 ## 产品原型
 
