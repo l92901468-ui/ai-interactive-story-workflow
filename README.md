@@ -39,11 +39,10 @@ The original domain is interactive narrative, but the engineering problems are g
 
 The system therefore treats generation as an **operated workflow** rather than a one-off model call.
 
-## My contribution and boundaries
+## My contribution
 
 - Independently designed and implemented this clean-room reconstruction, including product scope, workflow, data structures, Node.js runtime, validators, feedback ledger, state machines, health checks, CI/CD scripts, tests, static demo, and SVG architecture diagrams.
 - All examples use synthetic data and deterministic model behavior.
-- This repository **does not claim production scale**, a real device farm, live customer traffic, or Supercell-style infrastructure. It is intended to demonstrate how I reason about automation, reliability, developer tooling, testing, and controlled system change.
 
 ![Architecture overview](docs/images/architecture.svg)
 
